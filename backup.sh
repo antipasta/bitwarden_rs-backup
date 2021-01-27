@@ -14,10 +14,14 @@ else
   FINAL_BACKUP_FILE=$BACKUP_FILE
 fi
 
+BACKUP_DIR=$(dirname "$FINAL_BACKUP_FILE")
+BACKUP_FILENAME=$(basename "$FINAL_BACKUP_FILE")
+
 /usr/bin/sqlite3 $DB_FILE ".backup $FINAL_BACKUP_FILE"
 if [ $? -eq 0 ]
 then 
   echo "$(date "+%F %T") - Backup successfull to $FINAL_BACKUP_FILE"
+  tar -C "$BACKUP_DIR" -czf "$FINAL_BACKUP_FILE.tar.gz" "$BACKUP_FILENAME" && rm "$FINAL_BACKUP_FILE"
 else
   echo "$(date "+%F %T") - Backup unsuccessfull"
 fi
